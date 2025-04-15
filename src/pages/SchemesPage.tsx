@@ -9,6 +9,8 @@ import { Search, Filter, ExternalLink, IndianRupee } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { schemes } from '@/data/schemes';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { motion } from 'framer-motion';
 
 type SchemeCategory = 'All' | 'Health' | 'Education' | 'Financial' | 'Agriculture' | 'Employment' | 'Housing' | 'Social Welfare' | 'Technology' | 'Infrastructure';
 
@@ -89,6 +91,22 @@ const SchemesPage = () => {
     return matchesSearch && matchesCategory;
   });
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -102,9 +120,14 @@ const SchemesPage = () => {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="bg-gradient-to-r from-primary/10 to-transparent p-6 rounded-lg">
-        <h1 className="text-2xl font-bold mb-2 text-gray-900">Government Schemes</h1>
+    <motion.div 
+      className="space-y-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="bg-gradient-to-r from-purple-100 to-transparent p-6 rounded-xl shadow-sm">
+        <h1 className="text-2xl font-bold mb-2 text-gray-900 gradient-text">Government Schemes</h1>
         <p className="text-gray-600">
           Find government schemes that match your profile and eligibility
         </p>
@@ -115,7 +138,7 @@ const SchemesPage = () => {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 group-focus-within:text-primary transition-colors duration-200" />
           <Input
             placeholder="Search schemes..."
-            className="pl-8 transition-all duration-200 border-gray-200 focus:border-primary"
+            className="pl-8 transition-all duration-200 border-gray-200 focus:border-primary input-focus"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -149,94 +172,130 @@ const SchemesPage = () => {
       </div>
 
       {filteredSchemes.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg shadow-sm animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-500 mb-4">
+        <motion.div 
+          className="text-center py-12 bg-gray-50 rounded-xl shadow-sm"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-50 text-purple-500 mb-4">
             <IndianRupee className="h-8 w-8" />
           </div>
           <h3 className="text-lg font-medium">No matching schemes found</h3>
           <p className="text-gray-500 max-w-md mx-auto mt-2">
             Try adjusting your search criteria or check back later as new schemes are added regularly
           </p>
-        </div>
+        </motion.div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {filteredSchemes.map((scheme) => (
-            <Card 
-              key={scheme.id} 
-              className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-t-4 border-transparent group"
-              style={{
-                borderTopColor: hoveredScheme === scheme.id ? 'currentColor' : 'transparent'
-              }}
-              onMouseEnter={() => setHoveredScheme(scheme.id)}
-              onMouseLeave={() => setHoveredScheme(null)}
+            <motion.div 
+              key={scheme.id}
+              variants={itemVariants}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
             >
-              <div className={`h-2 ${getCategoryColor(scheme.category)}`}></div>
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <Badge variant="outline" className={`mb-2 transition-colors duration-200 ${getCategoryBadgeColor(scheme.category)}`}>
-                    {scheme.category}
-                  </Badge>
-                  {scheme.isPopular && (
-                    <Badge variant="secondary" className="bg-amber-100 text-amber-700 hover:bg-amber-200 hover:text-amber-800 transition-colors duration-200">
-                      Popular
+              <Card 
+                className="overflow-hidden border-t-4 border-transparent group rounded-xl"
+                style={{
+                  borderTopColor: hoveredScheme === scheme.id ? 'currentColor' : 'transparent'
+                }}
+                onMouseEnter={() => setHoveredScheme(scheme.id)}
+                onMouseLeave={() => setHoveredScheme(null)}
+              >
+                <div className={`h-2 ${getCategoryColor(scheme.category)}`}></div>
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start">
+                    <Badge variant="outline" className={`mb-2 transition-colors duration-200 ${getCategoryBadgeColor(scheme.category)} badge-hover`}>
+                      {scheme.category}
                     </Badge>
-                  )}
-                </div>
-                <CardTitle className="text-lg group-hover:text-primary transition-colors duration-200">
-                  {scheme.name}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pb-2">
-                <p className="text-gray-600 text-sm">{scheme.description}</p>
-
-                <div className="mt-4 space-y-2">
-                  <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
-                    {scheme.ageRange.min || scheme.ageRange.max ? (
-                      <div className="bg-gray-50 p-2 rounded-md transition-all duration-200 hover:bg-gray-100">
-                        <Label className="text-gray-500">Age</Label>
-                        <p className="font-medium">
-                          {scheme.ageRange.min ? `${scheme.ageRange.min}+ years` : ''}
-                          {scheme.ageRange.min && scheme.ageRange.max ? ' to ' : ''}
-                          {scheme.ageRange.max ? `${scheme.ageRange.max} years` : ''}
-                        </p>
-                      </div>
-                    ) : null}
-                    
-                    {scheme.gender && scheme.gender !== 'Any' ? (
-                      <div className="bg-gray-50 p-2 rounded-md transition-all duration-200 hover:bg-gray-100">
-                        <Label className="text-gray-500">Gender</Label>
-                        <p className="font-medium">{scheme.gender}</p>
-                      </div>
-                    ) : null}
-                    
-                    {scheme.maxIncome ? (
-                      <div className="bg-gray-50 p-2 rounded-md transition-all duration-200 hover:bg-gray-100">
-                        <Label className="text-gray-500">Max Income</Label>
-                        <p className="font-medium">₹{(scheme.maxIncome / 100000).toFixed(0)} Lakh</p>
-                      </div>
-                    ) : null}
-                    
-                    {scheme.casteCategory && scheme.casteCategory !== 'Any' ? (
-                      <div className="bg-gray-50 p-2 rounded-md transition-all duration-200 hover:bg-gray-100">
-                        <Label className="text-gray-500">Category</Label>
-                        <p className="font-medium">{scheme.casteCategory}</p>
-                      </div>
-                    ) : null}
+                    {scheme.isPopular && (
+                      <Badge variant="secondary" className="bg-amber-100 text-amber-700 hover:bg-amber-200 hover:text-amber-800 transition-colors duration-200 badge-hover">
+                        Popular
+                      </Badge>
+                    )}
                   </div>
-                </div>
-              </CardContent>
-              <CardFooter className="pt-2">
-                <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-white transition-all duration-300" asChild>
-                  <a href={scheme.link} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                    Learn More <ExternalLink size={14} className="ml-2 opacity-70" />
-                  </a>
-                </Button>
-              </CardFooter>
-            </Card>
+                  <CardTitle className="text-lg group-hover:text-primary transition-colors duration-200">
+                    {scheme.name}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pb-2">
+                  <p className="text-gray-600 text-sm">{scheme.description}</p>
+
+                  <div className="mt-4 space-y-2">
+                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
+                      {scheme.ageRange.min || scheme.ageRange.max ? (
+                        <div className="bg-gray-50 p-2 rounded-md transition-all duration-200 hover:bg-gray-100 hover-scale">
+                          <Label className="text-gray-500">Age</Label>
+                          <p className="font-medium">
+                            {scheme.ageRange.min ? `${scheme.ageRange.min}+ years` : ''}
+                            {scheme.ageRange.min && scheme.ageRange.max ? ' to ' : ''}
+                            {scheme.ageRange.max ? `${scheme.ageRange.max} years` : ''}
+                          </p>
+                        </div>
+                      ) : null}
+                      
+                      {scheme.gender && scheme.gender !== 'Any' ? (
+                        <div className="bg-gray-50 p-2 rounded-md transition-all duration-200 hover:bg-gray-100 hover-scale">
+                          <Label className="text-gray-500">Gender</Label>
+                          <p className="font-medium">{scheme.gender}</p>
+                        </div>
+                      ) : null}
+                      
+                      {scheme.maxIncome ? (
+                        <div className="bg-gray-50 p-2 rounded-md transition-all duration-200 hover:bg-gray-100 hover-scale">
+                          <Label className="text-gray-500">Max Income</Label>
+                          <p className="font-medium">₹{(scheme.maxIncome / 100000).toFixed(0)} Lakh</p>
+                        </div>
+                      ) : null}
+                      
+                      {scheme.casteCategory && scheme.casteCategory !== 'Any' ? (
+                        <div className="bg-gray-50 p-2 rounded-md transition-all duration-200 hover:bg-gray-100 hover-scale">
+                          <Label className="text-gray-500">Category</Label>
+                          <p className="font-medium">{scheme.casteCategory}</p>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="pt-2">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full button-hover group-hover:bg-primary group-hover:text-white transition-all duration-300" 
+                        asChild
+                      >
+                        <a href={scheme.link} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                          Learn More <ExternalLink size={14} className="ml-2 opacity-70" />
+                        </a>
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 p-4 shadow-lg rounded-lg">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-sm">Application Process:</h4>
+                        <ol className="list-decimal list-inside text-sm text-gray-600">
+                          <li>Visit the official website</li>
+                          <li>Create an account or log in</li>
+                          <li>Complete the application form</li>
+                          <li>Upload required documents</li>
+                          <li>Submit and track your application</li>
+                        </ol>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                </CardFooter>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
