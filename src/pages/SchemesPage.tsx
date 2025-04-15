@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Search, Filter, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Indian } from 'lucide-react';
+import { IndianRupee } from 'lucide-react';
 import { schemes } from '@/data/schemes';
 
 type SchemeCategory = 'All' | 'Health' | 'Education' | 'Financial' | 'Agriculture' | 'Employment' | 'Housing' | 'Social Welfare';
@@ -116,7 +116,7 @@ const SchemesPage = () => {
       {filteredSchemes.length === 0 ? (
         <div className="text-center py-12">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-500 mb-4">
-            <Indian className="h-8 w-8" />
+            <IndianRupee className="h-8 w-8" />
           </div>
           <h3 className="text-lg font-medium">No matching schemes found</h3>
           <p className="text-gray-500 max-w-md mx-auto mt-2">
