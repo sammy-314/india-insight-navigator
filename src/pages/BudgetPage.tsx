@@ -12,15 +12,15 @@ import { motion } from 'framer-motion';
 type ImpactType = 'All' | 'Positive' | 'Negative' | 'Neutral';
 type SectorType = 'All' | 'Healthcare' | 'Education' | 'Agriculture' | 'Infrastructure' | 'Taxation' | 'Social Welfare' | 'Defense' | 'Technology' | 'Financial' | 'Housing';
 
-// Dynamic color mapping for impact types
+// Dynamic color mapping for impact types - updated for navy/grey theme
 const getImpactColor = (impact: string) => {
   switch (impact) {
     case 'Positive':
-      return 'bg-positive/10 text-positive border-positive/20 hover:bg-positive/20';
+      return 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200';
     case 'Negative':
-      return 'bg-negative/10 text-negative border-negative/20 hover:bg-negative/20';
+      return 'bg-red-100 text-red-800 border-red-200 hover:bg-red-200';
     default:
-      return 'bg-neutral/10 text-neutral border-neutral/20 hover:bg-neutral/20';
+      return 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200';
   }
 };
 
@@ -36,16 +36,16 @@ const getImpactIcon = (impact: string) => {
   }
 };
 
-// Get sector color
+// Get sector color - updated for navy/grey theme
 const getSectorColor = (sector: string) => {
   const colors: Record<string, string> = {
-    'Healthcare': 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border-emerald-200',
-    'Education': 'bg-blue-100 text-blue-800 hover:bg-blue-200 border-blue-200',
+    'Healthcare': 'bg-blue-100 text-blue-800 hover:bg-blue-200 border-blue-200',
+    'Education': 'bg-sky-100 text-sky-800 hover:bg-sky-200 border-sky-200',
     'Agriculture': 'bg-green-100 text-green-800 hover:bg-green-200 border-green-200',
-    'Infrastructure': 'bg-purple-100 text-purple-800 hover:bg-purple-200 border-purple-200',
+    'Infrastructure': 'bg-slate-100 text-slate-800 hover:bg-slate-200 border-slate-200',
     'Taxation': 'bg-amber-100 text-amber-800 hover:bg-amber-200 border-amber-200',
     'Social Welfare': 'bg-rose-100 text-rose-800 hover:bg-rose-200 border-rose-200',
-    'Defense': 'bg-slate-100 text-slate-800 hover:bg-slate-200 border-slate-200',
+    'Defense': 'bg-gray-100 text-gray-800 hover:bg-gray-200 border-gray-200',
     'Technology': 'bg-cyan-100 text-cyan-800 hover:bg-cyan-200 border-cyan-200',
     'Financial': 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200 border-indigo-200',
     'Housing': 'bg-orange-100 text-orange-800 hover:bg-orange-200 border-orange-200',
@@ -65,18 +65,20 @@ const BudgetPage = () => {
 
   useEffect(() => {
     if (userDetails) {
-      // Filter budget provisions based on user profile with more detailed matching
+      // Enhanced filter budget provisions based on user profile with more detailed matching
       const filtered = budgetProvisions.filter(provision => {
         // Check income eligibility - if max is 0, it means no limit
         const matchesIncome = provision.applicableIncomeRange.max === 0 || 
           (userDetails.income >= provision.applicableIncomeRange.min && 
            (provision.applicableIncomeRange.max === 0 || userDetails.income <= provision.applicableIncomeRange.max));
         
-        // Check occupation match
+        // More granular occupation match
         const matchesOccupation = provision.applicableOccupations.includes('All') ||
-          provision.applicableOccupations.some(occ => userDetails.occupation.includes(occ));
+          provision.applicableOccupations.some(occ => 
+            userDetails.occupation.toLowerCase().includes(occ.toLowerCase())
+          );
             
-        // Check age group match
+        // Enhanced age group match with actual age numbers
         const matchesAge = provision.applicableAgeGroups.includes('All') ||
           provision.applicableAgeGroups.some(group => {
             if (group === 'All') return true;
@@ -86,30 +88,112 @@ const BudgetPage = () => {
             return false;
           });
 
-        // Additional filtering based on gender or special categories if applicable
-        const matchesSpecialCategory = !provision.specialCategory || 
-          (provision.specialCategory === 'Farmer' && userDetails.occupation === 'Farmer') ||
-          (provision.specialCategory === 'Government Employee' && userDetails.occupation === 'Salaried Employee (Government)') ||
-          (provision.specialCategory === 'Tribal Groups' && userDetails.caste === 'ST') ||
-          (provision.specialCategory === 'Artisans' && userDetails.occupation === 'Self-employed Professional') ||
-          (provision.specialCategory === 'Fisheries' && userDetails.occupation === 'Farmer') ||
-          (provision.specialCategory === 'Gig Workers' && userDetails.occupation === 'Self-employed Professional');
+        // Match education level if applicable
+        const matchesEducation = !provision.educationLevel || 
+          provision.educationLevel === 'Any' || 
+          provision.educationLevel === userDetails.education;
+          
+        // Match gender if applicable
+        const matchesGender = !provision.gender ||
+          provision.gender === 'Any' ||
+          provision.gender === userDetails.gender;
+          
+        // Match state if applicable
+        const matchesState = !provision.applicableStates ||
+          provision.applicableStates.includes('All') ||
+          provision.applicableStates.includes(userDetails.state);
+          
+        // Match marital status if applicable
+        const matchesMaritalStatus = !provision.maritalStatus ||
+          provision.maritalStatus === 'Any' ||
+          provision.maritalStatus === userDetails.maritalStatus;
+
+        // Additional filtering based on special categories with more granular checks
+        let matchesSpecialCategory = true;
         
-        return matchesIncome && matchesOccupation && matchesAge && matchesSpecialCategory;
+        if (provision.specialCategory) {
+          matchesSpecialCategory = false;
+          
+          if (provision.specialCategory === 'Farmer' && 
+              userDetails.occupation.toLowerCase().includes('farm')) {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'Government Employee' && 
+                  userDetails.occupation.includes('Government')) {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'Tribal Groups' && 
+                  userDetails.caste === 'ST') {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'Reserved Categories' && 
+                  ['SC', 'ST', 'OBC'].includes(userDetails.caste)) {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'EWS' && 
+                  userDetails.caste === 'EWS') {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'Artisans' && 
+                  userDetails.occupation.toLowerCase().includes('self-employed')) {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'Fisheries' && 
+                  userDetails.occupation.toLowerCase().includes('fish')) {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'Gig Workers' && 
+                  (userDetails.occupation === 'Self-employed Professional' || 
+                   userDetails.occupation === 'Freelancer')) {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'PwD' && 
+                  userDetails.disability === true) {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'BPL' && 
+                  userDetails.bplCard === true) {
+            matchesSpecialCategory = true;
+          }
+          else if (provision.specialCategory === 'Any') {
+            matchesSpecialCategory = true;
+          }
+        }
+        
+        // Match document requirements if specified
+        const hasDocuments = !provision.requiredDocuments ||
+          provision.requiredDocuments.every(doc => {
+            if (doc === 'PAN Card') return userDetails.panCard;
+            if (doc === 'Aadhaar Card') return userDetails.aadharCard;
+            if (doc === 'Bank Account') return userDetails.bankAccount;
+            return true;
+          });
+        
+        return matchesIncome && matchesOccupation && matchesAge && 
+               matchesSpecialCategory && matchesEducation && 
+               matchesGender && matchesState && matchesMaritalStatus &&
+               hasDocuments;
       });
 
-      // Calculate personalized relevance score for each provision
+      // Enhanced personalized relevance score calculation for each provision
       const scoredProvisions = filtered.map(provision => {
         let relevanceScore = 0;
         
-        // Income relevance
-        if (provision.applicableIncomeRange.max > 0 && userDetails.income <= provision.applicableIncomeRange.max) {
-          relevanceScore += 3;
+        // Calculate income relevance - more points for provisions closely matching income
+        if (userDetails.income <= provision.applicableIncomeRange.max || provision.applicableIncomeRange.max === 0) {
+          // Higher score for provisions that target user's income bracket more specifically
+          const incomeRange = provision.applicableIncomeRange.max - provision.applicableIncomeRange.min;
+          if (incomeRange > 0 && incomeRange < 500000) relevanceScore += 4;  // Very targeted
+          else if (incomeRange >= 500000 && incomeRange < 1000000) relevanceScore += 3;
+          else relevanceScore += 2;
         }
         
-        // Occupation direct match
-        if (provision.applicableOccupations.includes(userDetails.occupation)) {
+        // Occupation direct match - higher points for exact match
+        if (provision.applicableOccupations.some(occ => 
+          userDetails.occupation.toLowerCase() === occ.toLowerCase())) {
           relevanceScore += 5;
+        } else if (provision.applicableOccupations.includes('All')) {
+          relevanceScore += 1;
         }
         
         // Impact score
@@ -119,15 +203,51 @@ const BudgetPage = () => {
           relevanceScore -= 1;
         }
         
-        // Generate a personalized relevance message if not already present
+        // Special category match gives high relevance
+        if (provision.specialCategory && 
+            ((provision.specialCategory === 'Farmer' && userDetails.occupation === 'Farmer') ||
+             (provision.specialCategory === 'Government Employee' && userDetails.occupation === 'Salaried Employee (Government)') ||
+             (provision.specialCategory === 'Tribal Groups' && userDetails.caste === 'ST') ||
+             (provision.specialCategory === 'Reserved Categories' && ['SC', 'ST', 'OBC'].includes(userDetails.caste)) ||
+             (provision.specialCategory === 'EWS' && userDetails.caste === 'EWS') ||
+             (provision.specialCategory === 'PwD' && userDetails.disability === true) ||
+             (provision.specialCategory === 'BPL' && userDetails.bplCard === true))) {
+          relevanceScore += 6;
+        }
+        
+        // Education level match
+        if (provision.educationLevel && provision.educationLevel === userDetails.education) {
+          relevanceScore += 3;
+        }
+        
+        // State match
+        if (provision.applicableStates && provision.applicableStates.includes(userDetails.state)) {
+          relevanceScore += 4;
+        }
+        
+        // Gender match
+        if (provision.gender && provision.gender === userDetails.gender) {
+          relevanceScore += 2;
+        }
+        
+        // Generate a personalized relevance message based on user profile
         let relevanceMessage = provision.relevance;
         if (!relevanceMessage) {
           if (provision.impact === 'Positive') {
-            relevanceMessage = `Based on your ${userDetails.occupation} occupation and income level, this budget provision likely benefits you.`;
+            relevanceMessage = `As ${userDetails.occupation} with an income of ₹${userDetails.income.toLocaleString()}, this budget provision directly benefits your financial situation.`;
           } else if (provision.impact === 'Negative') {
-            relevanceMessage = `As ${userDetails.occupation} with your current income, this may negatively impact your finances.`;
+            relevanceMessage = `Based on your occupation (${userDetails.occupation}) and income level (₹${userDetails.income.toLocaleString()}), this may increase your financial burden.`;
           } else {
-            relevanceMessage = `This budget provision has a neutral effect on your financial situation.`;
+            relevanceMessage = `For someone with your profile, this budget provision has a neutral effect on your finances.`;
+          }
+          
+          // Add special category information if relevant
+          if (provision.specialCategory === 'Farmer' && userDetails.occupation === 'Farmer') {
+            relevanceMessage += " This provision specifically targets farmers like you.";
+          } else if (provision.specialCategory === 'Government Employee' && userDetails.occupation === 'Salaried Employee (Government)') {
+            relevanceMessage += " This is particularly relevant for government employees like yourself.";
+          } else if (provision.specialCategory === 'BPL' && userDetails.bplCard) {
+            relevanceMessage += " As a BPL cardholder, you are specifically targeted by this provision.";
           }
         }
         
@@ -174,7 +294,7 @@ const BudgetPage = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="bg-gradient-to-r from-primary/10 to-transparent p-6 rounded-lg">
-        <h1 className="text-2xl font-bold mb-2 text-gray-900">Budget Impact Analysis</h1>
+        <h1 className="text-2xl font-bold mb-2 text-primary">Budget Impact Analysis</h1>
         <p className="text-gray-600">
           Understand how the Union Budget affects you based on your profile
         </p>
@@ -241,7 +361,7 @@ const BudgetPage = () => {
 
       {filteredProvisions.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg shadow-sm animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-500 mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-primary mb-4">
             <AlertTriangle size={32} />
           </div>
           <h3 className="text-lg font-medium">No relevant budget provisions found</h3>
@@ -252,48 +372,104 @@ const BudgetPage = () => {
       ) : (
         <div className="space-y-4">
           {filteredProvisions.map((provision, index) => (
-            <Card 
-              key={provision.id} 
-              className="overflow-hidden transition-all duration-300 hover:shadow-lg border-l-4 group"
-              style={{
-                borderLeftColor: provision.impact === 'Positive' ? 'rgb(16, 185, 129)' : 
-                                provision.impact === 'Negative' ? 'rgb(239, 68, 68)' : 
-                                'rgb(107, 114, 128)'
-              }}
-              onMouseEnter={() => setHoveredProvision(provision.id)}
-              onMouseLeave={() => setHoveredProvision(null)}
+            <motion.div
+              key={provision.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
             >
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start flex-wrap gap-2">
-                  <Badge 
-                    variant="outline" 
-                    className={`mb-2 transition-all duration-200 ${getSectorColor(provision.sector)}`}
-                  >
-                    {provision.sector}
-                  </Badge>
-                  <Badge 
-                    variant="outline" 
-                    className={`flex items-center transition-all duration-200 ${getImpactColor(provision.impact)}`}
-                  >
-                    {getImpactIcon(provision.impact)}
-                    {provision.impact} Impact
-                  </Badge>
-                </div>
-                <CardTitle className="text-lg group-hover:text-primary transition-colors duration-200">
-                  {provision.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">{provision.description}</p>
-                
-                {provision.relevance && (
-                  <div className="mt-4 bg-gray-50 p-4 rounded-md border border-gray-100 group-hover:border-primary/20 transition-colors duration-300">
-                    <h4 className="font-medium text-sm mb-1 text-gray-700">How this affects you</h4>
-                    <p className="text-sm text-gray-600">{provision.relevance}</p>
+              <Card 
+                key={provision.id} 
+                className="overflow-hidden transition-all duration-300 hover:shadow-lg border-l-4 group"
+                style={{
+                  borderLeftColor: provision.impact === 'Positive' ? 'rgb(16, 185, 129)' : 
+                                  provision.impact === 'Negative' ? 'rgb(239, 68, 68)' : 
+                                  'rgb(107, 114, 128)'
+                }}
+                onMouseEnter={() => setHoveredProvision(provision.id)}
+                onMouseLeave={() => setHoveredProvision(null)}
+              >
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start flex-wrap gap-2">
+                    <Badge 
+                      variant="outline" 
+                      className={`mb-2 transition-all duration-200 ${getSectorColor(provision.sector)}`}
+                    >
+                      {provision.sector}
+                    </Badge>
+                    <Badge 
+                      variant="outline" 
+                      className={`flex items-center transition-all duration-200 ${getImpactColor(provision.impact)}`}
+                    >
+                      {getImpactIcon(provision.impact)}
+                      {provision.impact} Impact
+                    </Badge>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+                  <CardTitle className="text-lg group-hover:text-primary transition-colors duration-200">
+                    {provision.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">{provision.description}</p>
+                  
+                  {provision.relevance && (
+                    <div className="mt-4 bg-gray-50 p-4 rounded-md border border-gray-100 group-hover:border-primary/20 transition-colors duration-300">
+                      <h4 className="font-medium text-sm mb-1 text-primary">How this affects you</h4>
+                      <p className="text-sm text-gray-600">{provision.relevance}</p>
+                      
+                      {/* Relevance Score Indicator */}
+                      <div className="mt-3 flex items-center">
+                        <span className="text-xs text-gray-500 mr-2">Relevance:</span>
+                        <div className="flex">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <div 
+                              key={i}
+                              className={`w-2 h-6 mx-0.5 rounded-sm ${
+                                i < Math.min(Math.round(provision.relevanceScore / 2), 5) 
+                                  ? 'bg-primary' 
+                                  : 'bg-gray-200'
+                              }`}
+                            ></div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Show specific criteria that made this provision relevant */}
+                  <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+                    {provision.applicableOccupations.includes(userDetails.occupation) && (
+                      <div className="bg-blue-50 text-blue-700 p-2 rounded">
+                        Matches your occupation
+                      </div>
+                    )}
+                    
+                    {provision.applicableIncomeRange.min <= userDetails.income && 
+                     (provision.applicableIncomeRange.max === 0 || provision.applicableIncomeRange.max >= userDetails.income) && (
+                      <div className="bg-green-50 text-green-700 p-2 rounded">
+                        Matches your income level
+                      </div>
+                    )}
+                    
+                    {provision.specialCategory && 
+                     ((provision.specialCategory === 'Farmer' && userDetails.occupation === 'Farmer') ||
+                      (provision.specialCategory === 'Government Employee' && userDetails.occupation.includes('Government')) ||
+                      (provision.specialCategory === 'Tribal Groups' && userDetails.caste === 'ST') ||
+                      (provision.specialCategory === 'BPL' && userDetails.bplCard === true)) && (
+                      <div className="bg-amber-50 text-amber-700 p-2 rounded">
+                        Specific to your category
+                      </div>
+                    )}
+                    
+                    {provision.applicableStates && provision.applicableStates.includes(userDetails.state) && (
+                      <div className="bg-indigo-50 text-indigo-700 p-2 rounded">
+                        Applicable in your state
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
       )}
