@@ -65,32 +65,7 @@ export default {
 				},
 				saffron: '#FF9933',
 				green: '#138808',
-				navy: {
-					DEFAULT: '#000080',
-					50: '#E6E6FF',
-					100: '#CCCCFF',
-					200: '#9999FF',
-					300: '#6666FF',
-					400: '#3333FF',
-					500: '#0000FF',
-					600: '#0000CC',
-					700: '#000080',
-					800: '#000066',
-					900: '#000033'
-				},
-				'grey': {
-					DEFAULT: '#D3D3D3',
-					50: '#F7F7F7',
-					100: '#E6E6E6',
-					200: '#D3D3D3',
-					300: '#BDBDBD',
-					400: '#A6A6A6',
-					500: '#909090',
-					600: '#787878',
-					700: '#5E5E5E',
-					800: '#454545',
-					900: '#232323'
-				},
+				navy: '#000080',
 				positive: '#10B981',
 				negative: '#EF4444',
 				neutral: '#6B7280',
@@ -176,9 +151,9 @@ export default {
 				'float': 'float 3s ease-in-out infinite'
 			},
 			boxShadow: {
-				'glow-sm': '0 2px 10px -2px rgba(0, 0, 128, 0.2)',
-				'glow-md': '0 4px 20px -2px rgba(0, 0, 128, 0.3)',
-				'glow-lg': '0 8px 30px -2px rgba(0, 0, 128, 0.35)'
+				'glow-sm': '0 2px 10px -2px rgba(124, 58, 237, 0.2)',
+				'glow-md': '0 4px 20px -2px rgba(124, 58, 237, 0.3)',
+				'glow-lg': '0 8px 30px -2px rgba(124, 58, 237, 0.35)'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

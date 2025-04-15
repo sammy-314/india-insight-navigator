@@ -14,37 +14,37 @@ import { motion } from 'framer-motion';
 
 type SchemeCategory = 'All' | 'Health' | 'Education' | 'Financial' | 'Agriculture' | 'Employment' | 'Housing' | 'Social Welfare' | 'Technology' | 'Infrastructure';
 
-// Dynamic color mapping for categories with navy blue theme
+// Dynamic color mapping for categories
 const getCategoryColor = (category: string) => {
   const colors: Record<string, string> = {
-    'Health': 'bg-sky-600 hover:bg-sky-700',
-    'Education': 'bg-blue-700 hover:bg-blue-800',
-    'Financial': 'bg-amber-600 hover:bg-amber-700',
-    'Agriculture': 'bg-green-700 hover:bg-green-800',
-    'Employment': 'bg-slate-600 hover:bg-slate-700',
-    'Housing': 'bg-orange-600 hover:bg-orange-700',
-    'Social Welfare': 'bg-rose-600 hover:bg-rose-700',
-    'Technology': 'bg-cyan-600 hover:bg-cyan-700',
-    'Infrastructure': 'bg-indigo-600 hover:bg-indigo-700'
+    'Health': 'bg-emerald-500 hover:bg-emerald-600',
+    'Education': 'bg-blue-500 hover:bg-blue-600',
+    'Financial': 'bg-amber-500 hover:bg-amber-600',
+    'Agriculture': 'bg-green-600 hover:bg-green-700',
+    'Employment': 'bg-purple-500 hover:bg-purple-600',
+    'Housing': 'bg-orange-500 hover:bg-orange-600',
+    'Social Welfare': 'bg-rose-500 hover:bg-rose-600',
+    'Technology': 'bg-cyan-500 hover:bg-cyan-600',
+    'Infrastructure': 'bg-violet-500 hover:bg-violet-600'
   };
   
-  return colors[category] || 'bg-navy-700 hover:bg-navy-800';
+  return colors[category] || 'bg-indigo-500 hover:bg-indigo-600';
 };
 
 const getCategoryBadgeColor = (category: string) => {
   const colors: Record<string, string> = {
-    'Health': 'bg-sky-100 text-sky-800 hover:bg-sky-200',
+    'Health': 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200',
     'Education': 'bg-blue-100 text-blue-800 hover:bg-blue-200',
     'Financial': 'bg-amber-100 text-amber-800 hover:bg-amber-200',
     'Agriculture': 'bg-green-100 text-green-800 hover:bg-green-200',
-    'Employment': 'bg-slate-100 text-slate-800 hover:bg-slate-200',
+    'Employment': 'bg-purple-100 text-purple-800 hover:bg-purple-200',
     'Housing': 'bg-orange-100 text-orange-800 hover:bg-orange-200',
     'Social Welfare': 'bg-rose-100 text-rose-800 hover:bg-rose-200',
     'Technology': 'bg-cyan-100 text-cyan-800 hover:bg-cyan-200',
-    'Infrastructure': 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200'
+    'Infrastructure': 'bg-violet-100 text-violet-800 hover:bg-violet-200'
   };
   
-  return colors[category] || 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+  return colors[category] || 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200';
 };
 
 const SchemesPage = () => {
@@ -57,102 +57,25 @@ const SchemesPage = () => {
 
   useEffect(() => {
     if (userDetails) {
-      // Enhanced filter schemes based on user details
+      // Filter schemes based on user details
       const filtered = schemes.filter(scheme => {
-        // Check if the scheme matches the user's profile with more specific matching
+        // Check if the scheme matches the user's profile
         const matchesAge = !scheme.ageRange.min || userDetails.age >= scheme.ageRange.min;
         const matchesMaxAge = !scheme.ageRange.max || userDetails.age <= scheme.ageRange.max;
-        
-        // More specific gender matching
-        const matchesGender = !scheme.gender || 
-                             scheme.gender === 'Any' || 
-                             scheme.gender === userDetails.gender;
-        
-        // More specific caste category matching
+        const matchesGender = !scheme.gender || scheme.gender === 'Any' || scheme.gender === userDetails.gender;
         const matchesCategory = !scheme.casteCategory || 
-                               scheme.casteCategory === 'Any' || 
-                               scheme.casteCategory === userDetails.caste || 
-                               (scheme.casteCategory === 'Reserved' && 
-                                ['SC', 'ST', 'OBC', 'EWS'].includes(userDetails.caste));
-        
-        // More specific income matching
+          scheme.casteCategory === 'Any' || 
+          scheme.casteCategory === userDetails.caste || 
+          (scheme.casteCategory === 'Reserved' && userDetails.caste !== 'General');
         const matchesIncome = !scheme.maxIncome || userDetails.income <= scheme.maxIncome;
+        const matchesOccupation = !scheme.occupation || 
+          scheme.occupation === 'Any' || 
+          scheme.occupation.includes(userDetails.occupation);
         
-        // Enhanced occupation matching
-        let matchesOccupation = false;
-        if (!scheme.occupation || scheme.occupation === 'Any') {
-          matchesOccupation = true;
-        } else if (Array.isArray(scheme.occupation)) {
-          matchesOccupation = scheme.occupation.some(occ => 
-            userDetails.occupation.toLowerCase().includes(occ.toLowerCase())
-          );
-        } else {
-          matchesOccupation = userDetails.occupation.toLowerCase().includes(scheme.occupation.toLowerCase());
-        }
-        
-        // Check for education level if specified in the scheme
-        const matchesEducation = !scheme.educationLevel || 
-                               scheme.educationLevel === 'Any' || 
-                               scheme.educationLevel === userDetails.education;
-        
-        // Check for state specific schemes
-        const matchesState = !scheme.states || 
-                            scheme.states.includes('All') || 
-                            scheme.states.includes(userDetails.state);
-        
-        // Check for marital status if applicable
-        const matchesMaritalStatus = !scheme.maritalStatus || 
-                                    scheme.maritalStatus === 'Any' || 
-                                    scheme.maritalStatus === userDetails.maritalStatus;
-        
-        // Check for disability specific schemes
-        const matchesDisability = !scheme.disability || 
-                                 (scheme.disability === true && userDetails.disability === true);
-        
-        // Check BPL criteria if specified
-        const matchesBPL = !scheme.bplRequired || userDetails.bplCard === true;
-        
-        // Consider document requirements
-        const hasRequiredDocuments = !scheme.requiredDocuments || 
-          scheme.requiredDocuments.every(doc => {
-            if (doc === 'PAN Card') return userDetails.panCard;
-            if (doc === 'Aadhaar Card') return userDetails.aadharCard;
-            if (doc === 'Bank Account') return userDetails.bankAccount;
-            return true;
-          });
-        
-        return matchesAge && matchesMaxAge && matchesGender && matchesCategory && 
-               matchesIncome && matchesOccupation && matchesEducation && 
-               matchesState && matchesMaritalStatus && matchesDisability &&
-               matchesBPL && hasRequiredDocuments;
+        return matchesAge && matchesMaxAge && matchesGender && matchesCategory && matchesIncome && matchesOccupation;
       });
 
-      // Add relevance scoring for sorting
-      const scoredSchemes = filtered.map(scheme => {
-        let score = 0;
-        
-        // Calculate relevance score based on how closely it matches user profile
-        if (scheme.category === 'Financial' && userDetails.income < 500000) score += 3;
-        if (scheme.category === 'Education' && userDetails.age < 30) score += 2;
-        if (scheme.category === 'Health' && userDetails.age > 50) score += 2;
-        if (scheme.category === 'Agriculture' && userDetails.occupation.includes('Farmer')) score += 5;
-        if (scheme.category === 'Social Welfare' && userDetails.income < 300000) score += 3;
-        if (scheme.casteCategory === userDetails.caste) score += 4;
-        if (scheme.gender === userDetails.gender) score += 2;
-        
-        // Disability specific scoring
-        if (userDetails.disability && scheme.disability) score += 5;
-        
-        // Higher scores for state-specific matches
-        if (scheme.states && scheme.states.includes(userDetails.state)) score += 3;
-        
-        return { ...scheme, relevanceScore: score };
-      });
-      
-      // Sort schemes by relevance score
-      scoredSchemes.sort((a, b) => b.relevanceScore - a.relevanceScore);
-      
-      setEligibleSchemes(scoredSchemes);
+      setEligibleSchemes(filtered);
       setIsLoading(false);
     }
   }, [userDetails]);
@@ -203,8 +126,8 @@ const SchemesPage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="bg-gradient-to-r from-primary/10 to-transparent p-6 rounded-xl shadow-sm">
-        <h1 className="text-2xl font-bold mb-2 text-primary">Government Schemes</h1>
+      <div className="bg-gradient-to-r from-purple-100 to-transparent p-6 rounded-xl shadow-sm">
+        <h1 className="text-2xl font-bold mb-2 text-gray-900 gradient-text">Government Schemes</h1>
         <p className="text-gray-600">
           Find government schemes that match your profile and eligibility
         </p>
@@ -255,7 +178,7 @@ const SchemesPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-primary mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-50 text-purple-500 mb-4">
             <IndianRupee className="h-8 w-8" />
           </div>
           <h3 className="text-lg font-medium">No matching schemes found</h3>
@@ -277,7 +200,7 @@ const SchemesPage = () => {
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
             >
               <Card 
-                className="overflow-hidden border-t-4 border-transparent group rounded-xl hover:shadow-lg transition-all duration-300"
+                className="overflow-hidden border-t-4 border-transparent group rounded-xl"
                 style={{
                   borderTopColor: hoveredScheme === scheme.id ? 'currentColor' : 'transparent'
                 }}
@@ -363,16 +286,6 @@ const SchemesPage = () => {
                           <li>Upload required documents</li>
                           <li>Submit and track your application</li>
                         </ol>
-                        
-                        {/* Show specific eligibility for this user */}
-                        <div className="mt-4 pt-3 border-t border-gray-100">
-                          <h4 className="font-semibold text-sm">Eligibility Match:</h4>
-                          <p className="text-sm text-gray-600 mt-1">
-                            This scheme matches {scheme.relevanceScore > 8 ? 'excellently' : 
-                              scheme.relevanceScore > 5 ? 'very well' :
-                              scheme.relevanceScore > 3 ? 'well' : 'partially'} with your profile
-                          </p>
-                        </div>
                       </div>
                     </HoverCardContent>
                   </HoverCard>

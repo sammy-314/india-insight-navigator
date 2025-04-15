@@ -16,7 +16,7 @@
 
 .hover-scale:hover {
   transform: scale(1.05);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 128, 0.2), 0 4px 6px -2px rgba(0, 0, 128, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.2), 0 4px 6px -2px rgba(124, 58, 237, 0.1);
 }
 
 /* Card Effects */
@@ -26,7 +26,7 @@
 
 .card-hover:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 30px -5px rgba(0, 0, 128, 0.25), 0 10px 15px -6px rgba(0, 0, 128, 0.15);
+  box-shadow: 0 15px 30px -5px rgba(124, 58, 237, 0.25), 0 10px 15px -6px rgba(124, 58, 237, 0.15);
 }
 
 /* Badge Effects */
@@ -71,29 +71,21 @@
 
 .input-focus:focus {
   border-color: hsl(var(--primary));
-  box-shadow: 0 0 0 3px rgba(0, 0, 128, 0.15);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
   transform: translateY(-1px);
 }
 
-/* Navy Blue Theme Gradients */
-.gradient-navy {
-  background: linear-gradient(135deg, #000080 0%, #0a1172 100%);
-}
-
-.gradient-light {
-  background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
-}
-
-.gradient-text-navy {
-  background: linear-gradient(135deg, #000080, #0a1172);
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 /* Animated Background */
-.animated-bg-navy {
-  background: linear-gradient(-45deg, #000080, #0a1172, #1e3a8a, #000080);
+.animated-bg {
+  background: linear-gradient(-45deg, #7c3aed, #8b5cf6, #a78bfa, #7c3aed);
   background-size: 400% 400%;
   animation: gradientBg 15s ease infinite;
 }
@@ -145,16 +137,6 @@
   100% {
     transform: translateY(0px);
   }
-}
-
-/* Navy Blue Theme Button Glow */
-.button-glow {
-  transition: all 0.3s ease;
-  box-shadow: 0 0 0 rgba(0, 0, 128, 0);
-}
-
-.button-glow:hover {
-  box-shadow: 0 0 20px rgba(0, 0, 128, 0.4);
 }
 
 /* Staggered Animation */
