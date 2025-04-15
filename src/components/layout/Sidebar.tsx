@@ -8,7 +8,8 @@ import {
   BarChart3, 
   Calculator, 
   ChevronLeft, 
-  ChevronRight 
+  ChevronRight,
+  BookOpen
 } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
 import { cn } from '@/lib/utils';
@@ -20,6 +21,8 @@ interface NavItemProps {
 }
 
 const NavItem: React.FC<NavItemProps> = ({ to, icon: Icon, label }) => {
+  const { isSidebarOpen } = useSidebar();
+  
   return (
     <NavLink 
       to={to}
@@ -31,7 +34,8 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon: Icon, label }) => {
       )}
     >
       <Icon size={18} />
-      <span>{label}</span>
+      <span className={cn("transition-opacity duration-200", 
+        isSidebarOpen ? "opacity-100" : "opacity-0 md:hidden w-0 md:w-auto overflow-hidden")}>{label}</span>
     </NavLink>
   );
 };
@@ -57,8 +61,8 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div 
         className={cn(
-          "fixed inset-y-0 left-0 z-30 w-64 bg-primary transition-transform transform duration-300 ease-in-out",
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0 md:w-16"
+          "fixed inset-y-0 left-0 z-30 bg-primary transition-transform transform duration-300 ease-in-out",
+          isSidebarOpen ? "w-64 translate-x-0" : "-translate-x-full md:translate-x-0 md:w-16"
         )}
       >
         <div className="flex flex-col h-full">
@@ -97,9 +101,10 @@ const Sidebar = () => {
           
           {/* Navigation */}
           <div className="flex-1 px-3 py-4 space-y-1">
-            <NavItem to="/dashboard/schemes" icon={ClipboardList} label={isSidebarOpen ? "Schemes" : ""} />
-            <NavItem to="/dashboard/budget" icon={BarChart3} label={isSidebarOpen ? "Budget Impact" : ""} />
-            <NavItem to="/dashboard/tax-calculator" icon={Calculator} label={isSidebarOpen ? "Tax Calculator" : ""} />
+            <NavItem to="/dashboard/schemes" icon={ClipboardList} label="Schemes" />
+            <NavItem to="/dashboard/budget" icon={BarChart3} label="Budget Impact" />
+            <NavItem to="/dashboard/tax-calculator" icon={Calculator} label="Tax Calculator" />
+            <NavItem to="/dashboard/resources" icon={BookOpen} label="Resources" />
           </div>
         </div>
       </div>

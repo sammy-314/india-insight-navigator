@@ -6,7 +6,7 @@ import { useSidebar } from './SidebarProvider';
 import Sidebar from './Sidebar';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { MenuIcon } from 'lucide-react';
+import { MenuIcon, LogOut } from 'lucide-react';
 
 const DashboardLayout = () => {
   const { userDetails, isProfileComplete } = useUser();
@@ -20,6 +20,11 @@ const DashboardLayout = () => {
     }
   }, [userDetails, navigate]);
 
+  const handleLogout = () => {
+    toast.success('Logged out successfully');
+    navigate('/');
+  };
+
   if (!userDetails) {
     return null;
   }
@@ -28,7 +33,9 @@ const DashboardLayout = () => {
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
       
-      <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'md:ml-64' : ''}`}>
+      <div className={`flex-1 transition-all duration-300 ${
+        isSidebarOpen ? 'md:ml-64' : 'md:ml-16'
+      }`}>
         <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center space-x-4">
@@ -45,10 +52,19 @@ const DashboardLayout = () => {
               </h1>
             </div>
             
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-4">
               <div className="hidden sm:block text-sm text-gray-600">
                 Welcome, <span className="font-medium">{userDetails.name}</span>
               </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleLogout}
+                className="flex items-center gap-1 text-gray-700 hover:text-red-600"
+              >
+                <LogOut size={16} />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
             </div>
           </div>
         </div>

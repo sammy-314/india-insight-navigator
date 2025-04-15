@@ -13,6 +13,7 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import SchemesPage from "./pages/SchemesPage";
 import BudgetPage from "./pages/BudgetPage";
 import TaxCalculatorPage from "./pages/TaxCalculatorPage";
+import ResourcesPage from "./pages/ResourcesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
                 <Route path="schemes" element={<SchemesPage />} />
                 <Route path="budget" element={<BudgetPage />} />
                 <Route path="tax-calculator" element={<TaxCalculatorPage />} />
+                <Route path="resources" element={<ResourcesPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

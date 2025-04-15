@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, AlertTriangle } from 'lucide-react';
 import { budgetProvisions } from '@/data/budget';
 
 type ImpactType = 'All' | 'Positive' | 'Negative' | 'Neutral';
@@ -21,17 +21,19 @@ const BudgetPage = () => {
 
   useEffect(() => {
     if (userDetails) {
-      // Filter budget provisions based on user profile
+      // Filter budget provisions based on user profile with more detailed matching
       const filtered = budgetProvisions.filter(provision => {
-        // Check eligibility based on user details
-        const matchesIncome = !provision.applicableIncomeRange.min || userDetails.income >= provision.applicableIncomeRange.min;
-        const matchesMaxIncome = !provision.applicableIncomeRange.max || userDetails.income <= provision.applicableIncomeRange.max;
+        // Check income eligibility - if max is 0, it means no limit
+        const matchesIncome = provision.applicableIncomeRange.max === 0 || 
+          (userDetails.income >= provision.applicableIncomeRange.min && 
+           (provision.applicableIncomeRange.max === 0 || userDetails.income <= provision.applicableIncomeRange.max));
         
-        const matchesOccupation = !provision.applicableOccupations.length || 
-          provision.applicableOccupations.includes('All') ||
-          provision.applicableOccupations.includes(userDetails.occupation);
+        // Check occupation match
+        const matchesOccupation = provision.applicableOccupations.includes('All') ||
+          provision.applicableOccupations.some(occ => userDetails.occupation.includes(occ));
             
-        const matchesAge = !provision.applicableAgeGroups.length ||
+        // Check age group match
+        const matchesAge = provision.applicableAgeGroups.includes('All') ||
           provision.applicableAgeGroups.some(group => {
             if (group === 'All') return true;
             if (group === 'Youth' && userDetails.age >= 18 && userDetails.age <= 35) return true;
@@ -39,11 +41,52 @@ const BudgetPage = () => {
             if (group === 'Senior' && userDetails.age > 60) return true;
             return false;
           });
+
+        // Additional filtering based on gender or special categories if applicable
+        const matchesSpecialCategory = !provision.specialCategory || 
+          (provision.specialCategory === 'Farmer' && userDetails.occupation === 'Farmer') ||
+          (provision.specialCategory === 'Government Employee' && userDetails.occupation === 'Salaried Employee (Government)');
         
-        return matchesIncome && matchesMaxIncome && matchesOccupation && matchesAge;
+        return matchesIncome && matchesOccupation && matchesAge && matchesSpecialCategory;
       });
 
-      setRelevantProvisions(filtered);
+      // Calculate personalized relevance score for each provision
+      const scoredProvisions = filtered.map(provision => {
+        let relevanceScore = 0;
+        
+        // Income relevance
+        if (provision.applicableIncomeRange.max > 0 && userDetails.income <= provision.applicableIncomeRange.max) {
+          relevanceScore += 3;
+        }
+        
+        // Occupation direct match
+        if (provision.applicableOccupations.includes(userDetails.occupation)) {
+          relevanceScore += 5;
+        }
+        
+        // Generate a personalized relevance message if not already present
+        let relevanceMessage = provision.relevance;
+        if (!relevanceMessage) {
+          if (provision.impact === 'Positive') {
+            relevanceMessage = `Based on your ${userDetails.occupation} occupation and income level, this budget provision likely benefits you.`;
+          } else if (provision.impact === 'Negative') {
+            relevanceMessage = `As ${userDetails.occupation} with your current income, this may negatively impact your finances.`;
+          } else {
+            relevanceMessage = `This budget provision has a neutral effect on your financial situation.`;
+          }
+        }
+        
+        return {
+          ...provision,
+          relevanceScore,
+          relevance: relevanceMessage
+        };
+      });
+      
+      // Sort by relevance score (highest first)
+      scoredProvisions.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      
+      setRelevantProvisions(scoredProvisions);
       setIsLoading(false);
     }
   }, [userDetails]);
@@ -153,13 +196,11 @@ const BudgetPage = () => {
       {filteredProvisions.length === 0 ? (
         <div className="text-center py-12">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-500 mb-4">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 2v6.5M12 22v-6.5M4.93 4.93l4.6 4.6M14.47 14.47l4.6 4.6M2 12h6.5M22 12h-6.5M4.93 19.07l4.6-4.6M14.47 9.53l4.6-4.6" />
-            </svg>
+            <AlertTriangle size={32} />
           </div>
           <h3 className="text-lg font-medium">No relevant budget provisions found</h3>
           <p className="text-gray-500 max-w-md mx-auto mt-2">
-            Try adjusting your filters or check back later as new budget provisions are added
+            Based on your profile, we couldn't find budget provisions that match your criteria. Try adjusting your filters.
           </p>
         </div>
       ) : (

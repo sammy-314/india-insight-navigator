@@ -42,6 +42,7 @@ export const budgetProvisions = [
     applicableIncomeRange: { min: 0, max: 0 },
     applicableOccupations: ["Farmer"],
     applicableAgeGroups: ["All"],
+    specialCategory: "Farmer",
     relevance: "As someone involved in agriculture, you can access better infrastructure facilities and potentially benefit from improved logistics and storage facilities."
   },
   {
@@ -119,6 +120,7 @@ export const budgetProvisions = [
     applicableIncomeRange: { min: 0, max: 0 },
     applicableOccupations: ["Salaried Employee (Government)"],
     applicableAgeGroups: ["All"],
+    specialCategory: "Government Employee",
     relevance: "As a government employee, your retirement corpus will grow faster with the increased employer contribution to NPS."
   },
   {
