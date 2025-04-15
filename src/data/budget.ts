@@ -1,0 +1,278 @@
+
+export const budgetProvisions = [
+  {
+    id: 1,
+    title: "Income Tax Standard Deduction Increase",
+    description: "Standard deduction for salaried employees increased from ₹50,000 to ₹75,000 under the new tax regime.",
+    sector: "Taxation",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Salaried Employee (Private)", "Salaried Employee (Government)"],
+    applicableAgeGroups: ["All"],
+    relevance: "As a salaried individual, you will benefit from the increased standard deduction, resulting in lower taxable income and tax savings."
+  },
+  {
+    id: 2,
+    title: "New Income Tax Slabs",
+    description: "Revised income tax slabs under the new tax regime with enhanced exemption limit and reduced tax rates.",
+    sector: "Taxation",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 1500000 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "The new tax slabs are likely to reduce your tax liability, especially if your annual income is below ₹15 lakhs."
+  },
+  {
+    id: 3,
+    title: "Reduction in Corporate Tax Rate",
+    description: "Corporate tax rate reduced to 22% from 30% for existing companies who forego exemptions and incentives.",
+    sector: "Taxation",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Business Owner", "Self-employed Professional"],
+    applicableAgeGroups: ["All"],
+    relevance: "If you're a business owner, this reduction in corporate tax rate can significantly lower your tax burden, allowing for more reinvestment in your business."
+  },
+  {
+    id: 4,
+    title: "Agriculture Infrastructure Fund Enhancement",
+    description: "Increase in the Agriculture Infrastructure Fund to ₹40,000 crores to support agricultural infrastructure projects.",
+    sector: "Agriculture",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Farmer"],
+    applicableAgeGroups: ["All"],
+    relevance: "As someone involved in agriculture, you can access better infrastructure facilities and potentially benefit from improved logistics and storage facilities."
+  },
+  {
+    id: 5,
+    title: "National Education Policy Implementation",
+    description: "Allocation of funds for the implementation of the National Education Policy with focus on digital education and skill development.",
+    sector: "Education",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Student", "All"],
+    applicableAgeGroups: ["Youth"],
+    relevance: "You can benefit from improved educational infrastructure, digital learning resources, and new skill development programs."
+  },
+  {
+    id: 6,
+    title: "Healthcare Infrastructure Boost",
+    description: "Significant increase in healthcare budget to strengthen the healthcare infrastructure across the country.",
+    sector: "Healthcare",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "You can expect better healthcare facilities, more hospitals, and improved healthcare services in your area."
+  },
+  {
+    id: 7,
+    title: "Import Duty Increase on Electronic Goods",
+    description: "Increase in import duties on various electronic goods and components to boost domestic manufacturing.",
+    sector: "Technology",
+    impact: "Negative",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "You may experience higher prices for imported electronic goods like smartphones, laptops, and other consumer electronics."
+  },
+  {
+    id: 8,
+    title: "MSME Credit Guarantee Scheme",
+    description: "Enhanced credit guarantee scheme for MSMEs to facilitate easier access to credit with lower collateral requirements.",
+    sector: "Financial",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Self-employed Professional", "Business Owner"],
+    applicableAgeGroups: ["All"],
+    relevance: "If you run a small business, you can access loans with minimal collateral and better terms, enhancing your business growth opportunities."
+  },
+  {
+    id: 9,
+    title: "Increased Allocation for PM-KISAN",
+    description: "Higher allocation for PM-KISAN scheme with increased direct income support to farmers.",
+    sector: "Agriculture",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 200000 },
+    applicableOccupations: ["Farmer"],
+    applicableAgeGroups: ["All"],
+    relevance: "As a farmer, you will receive increased direct income support through the PM-KISAN scheme, providing financial stability."
+  },
+  {
+    id: 10,
+    title: "Housing Sector Stimulus",
+    description: "Extension of additional deduction of ₹1.5 lakh for loans taken for affordable housing until March 31, 2025.",
+    sector: "Housing",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 1800000 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "If you're planning to buy an affordable house with a home loan, you can avail an additional tax deduction, reducing your tax liability."
+  },
+  {
+    id: 11,
+    title: "Retirement Benefits Enhancement",
+    description: "Increased limit on employer's contribution to NPS from 10% to 14% for government employees.",
+    sector: "Financial",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Salaried Employee (Government)"],
+    applicableAgeGroups: ["All"],
+    relevance: "As a government employee, your retirement corpus will grow faster with the increased employer contribution to NPS."
+  },
+  {
+    id: 12,
+    title: "Fuel Excise Duty Changes",
+    description: "Increased excise duty on petrol and diesel to mobilize additional revenue for the government.",
+    sector: "Taxation",
+    impact: "Negative",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "You may face higher fuel costs, which could impact your transportation budget and potentially lead to inflation in goods and services."
+  },
+  {
+    id: 13,
+    title: "PM Garib Kalyan Anna Yojana Extension",
+    description: "Extension of free foodgrain distribution to poor families under PMGKAY for another year.",
+    sector: "Social Welfare",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 120000 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "If your family falls under the economically weaker section, you'll continue to receive free foodgrains, ensuring food security."
+  },
+  {
+    id: 14,
+    title: "Digital Rupee Introduction",
+    description: "Introduction of Central Bank Digital Currency (CBDC) - Digital Rupee by RBI to boost the digital economy.",
+    sector: "Technology",
+    impact: "Neutral",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "This will introduce a new digital payment option, potentially making transactions more efficient and secure in the future."
+  },
+  {
+    id: 15,
+    title: "Green Energy Transition Fund",
+    description: "Allocation for a fund to support transition to green energy and sustainable practices across industries.",
+    sector: "Infrastructure",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "In the long term, this could lead to cleaner energy, reduced pollution, and potentially new job opportunities in the green energy sector."
+  },
+  {
+    id: 16,
+    title: "GST Rate Rationalization",
+    description: "Rationalization of GST rates for various goods and services to simplify the tax structure.",
+    sector: "Taxation",
+    impact: "Neutral",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "Some items may become more expensive while others could become cheaper, depending on how the rates are adjusted for goods you regularly purchase."
+  },
+  {
+    id: 17,
+    title: "Ayushman Bharat Digital Mission",
+    description: "Allocation for digitalization of health records and integration with Ayushman Bharat scheme.",
+    sector: "Healthcare",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 500000 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "You can benefit from better healthcare services with digital health records, easier access to your medical history, and streamlined insurance claims."
+  },
+  {
+    id: 18,
+    title: "PM Awas Yojana Urban Expansion",
+    description: "Additional allocation for PM Awas Yojana (Urban) to support affordable housing in urban areas.",
+    sector: "Housing",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 300000 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "If you're in the lower to middle-income bracket living in urban areas, you could benefit from affordable housing options under this scheme."
+  },
+  {
+    id: 19,
+    title: "Defense Budget Increase",
+    description: "Significant increase in defense budget for modernization of armed forces and domestic defense manufacturing.",
+    sector: "Defense",
+    impact: "Neutral",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "While this strengthens national security, it may not have a direct impact on your day-to-day finances unless you're employed in the defense sector."
+  },
+  {
+    id: 20,
+    title: "PM-SHRI Schools Scheme",
+    description: "Launch of PM-SHRI Schools scheme to develop 14,500 schools as exemplary schools with modern infrastructure.",
+    sector: "Education",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Student"],
+    applicableAgeGroups: ["Youth"],
+    relevance: "If you have school-going children, they may benefit from improved educational facilities, better teaching methods, and enhanced learning environments."
+  },
+  {
+    id: 21,
+    title: "Senior Citizen Savings Scheme Interest Rate",
+    description: "Increase in interest rate for the Senior Citizen Savings Scheme from 7.4% to 8.2%.",
+    sector: "Financial",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Retired"],
+    applicableAgeGroups: ["Senior"],
+    relevance: "As a senior citizen, you can earn higher interest on your deposits in the Senior Citizen Savings Scheme, improving your retirement income."
+  },
+  {
+    id: 22,
+    title: "Skill India Digital Platform",
+    description: "Launch of a unified Skill India Digital platform for skilling, upskilling, and re-skilling young Indians.",
+    sector: "Education",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["Student", "Unemployed"],
+    applicableAgeGroups: ["Youth"],
+    relevance: "You can access various skill development courses to enhance your employability and career prospects in the digital economy."
+  },
+  {
+    id: 23,
+    title: "Custom Duty on Gold",
+    description: "Increase in customs duty on gold and precious metals from 7.5% to 12.5%.",
+    sector: "Taxation",
+    impact: "Negative",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "If you invest in gold or plan to purchase gold jewelry, you may face higher prices due to increased import duties."
+  },
+  {
+    id: 24,
+    title: "Electric Vehicle Subsidy Extension",
+    description: "Extension of subsidies for electric vehicles under FAME scheme with additional allocation.",
+    sector: "Infrastructure",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 0 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "If you're planning to buy an electric vehicle, you can continue to benefit from subsidies, making the purchase more affordable."
+  },
+  {
+    id: 25,
+    title: "Interest Subsidy for Housing Loans",
+    description: "Extension of interest subsidy of 3-4% on home loans for economically weaker sections and low-income groups.",
+    sector: "Housing",
+    impact: "Positive",
+    applicableIncomeRange: { min: 0, max: 600000 },
+    applicableOccupations: ["All"],
+    applicableAgeGroups: ["All"],
+    relevance: "If you belong to an economically weaker section or low-income group, you can avail reduced interest rates on housing loans, making home ownership more affordable."
+  }
+];
